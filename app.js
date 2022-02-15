@@ -1,15 +1,17 @@
 const express =require('express');
 const app = express();
-const {handleServerErrors} = require('./errors/index')
 
-const {getTopics} = require('./controllers')
+const {getTopics, getArticleById} = require('./controllers');
+const {handleServerErrors} = require('./errors/index');
 
-app.use(express.json())
+app.use(express.json());
 
-app.get('/api/topics', getTopics)
+app.get('/api/topics', getTopics);
+
+app.get('/api/articles/:article_id', getArticleById);
 
 app.get('/api/*', (req, res) => {
-    res.status(404).send('Path not found')
+    res.status(404).send('Path not found');
 })
 
 app.use(handleServerErrors);
