@@ -9,7 +9,12 @@ exports.getTopics = (req, res, next) => {
    })
 }
 
-exports.getArticleById = (req, res, next) => {
-  console.log(req)
-  //fetchArticleById()
+exports.getArticleById = (req, res, next) => {  
+  const {article_id} = req.params  
+   fetchArticleById(article_id).then((article) => { 
+     const [articleObj] = article
+     res.status(200).send({articleObj})
+   }).catch((err) => {
+     next(err)
+  })
 }
