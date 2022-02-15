@@ -38,10 +38,7 @@ describe('/api/articles/:article_id', () => {
             .get(`/api/articles/${articleId}`)
             .expect(200)
             .then((response) => {
-                expect(response.body.article).toHaveLength(1)
-                expect(Array.isArray(response.body.article)).toBe(true)
-                response.body.article.forEach((article) =>
-                expect(article).toEqual(
+                expect(response.body.articleObj).toEqual(
                     expect.objectContaining({
                         author: expect.any(String),
                         title: expect.any(String),
@@ -51,12 +48,11 @@ describe('/api/articles/:article_id', () => {
                         created_at: expect.any(String),
                         votes: expect.any(Number)
                     })
-                ))
+                )
             })
         })
     })
 })
-
 
 describe('invalid path', () => {
     test('returns status 404 error message when path not found', () => {
@@ -90,3 +86,4 @@ describe('article does not exist', () => {
         })
     })
 })
+
