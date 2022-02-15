@@ -3,6 +3,7 @@ const request = require("supertest");
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
 const app = require('../app');
+const { RowDescriptionMessage } = require("pg-protocol/dist/messages");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -32,12 +33,13 @@ describe('/api/topics', () => {
 
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
-        test('should return status 200 and an object containing a single object', () => {
+        test.only('should return status 200 and an object containing a single object', () => {
             const articleId = 2;            
             return request(app)
             .get(`/api/articles/${articleId}`)
             .expect(200)
             .then((response) => {
+                console.log(response.body)
                 expect(response.body.articleObj).toEqual(
                     expect.objectContaining({
                         author: expect.any(String),
@@ -52,7 +54,28 @@ describe('/api/articles/:article_id', () => {
             })
         })
     })
+    describe('PATCH', () => {
+        test('should return status 200 and an object containing updated article', () => {
+            const incVotes = { inc_votes: 10};
+            return request(app)
+            .patch('/api/articles/1')
+            .send(incVotes)
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articleObj).toEqual({
+                    author:
+                    title:
+                    article_id: 1,
+                    body:
+                    topic:
+                    created_at:
+                    votes:
+                })
+            })
+        })
+    })
 })
+
 
 describe('invalid path', () => {
     test('returns status 404 error message when path not found', () => {
