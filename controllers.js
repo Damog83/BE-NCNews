@@ -1,4 +1,4 @@
-const {fetchTopics} = require('./models')
+const {fetchTopics, fetchArticleById} = require('./models')
 
 exports.getTopics = (req, res, next) => {
    
@@ -7,4 +7,9 @@ exports.getTopics = (req, res, next) => {
    }).catch((err) => {
        next(err)
    })
+}
+
+exports.getArticleById = (req, res, next) => {
+  console.log(req)
+  //fetchArticleById()
 }
