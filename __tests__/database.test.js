@@ -10,14 +10,14 @@ afterAll(() => db.end());
 
 describe('/api/topics', () => {
     describe('GET', () => {
-        test('should return array', () => {
+        test('should return an object with an array of objects', () => {
             return request(app)
             .get('/api/topics')
             .expect(200)
             .then((response) => {
-                expect(response.body).toHaveLength(3)
-                expect(Array.isArray(response.body)).toBe(true)
-                response.body.forEach((slug) => 
+                expect(response.body.results).toHaveLength(3)
+                expect(Array.isArray(response.body.results)).toBe(true)
+                response.body.results.forEach((slug) => 
                 expect(slug).toEqual(
                     expect.objectContaining({
                         description: expect.any(String),
