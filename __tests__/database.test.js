@@ -39,7 +39,6 @@ describe('/api/articles/:article_id', () => {
             .get(`/api/articles/${articleId}`)
             .expect(200)
             .then((response) => {
-                //console.log(response.body)
                 expect(response.body.articleObj).toEqual(
                     expect.objectContaining({
                         author: expect.any(String),
@@ -116,7 +115,6 @@ describe('/api/articles/:article_id', () => {
                 .send(inc_votes)
                 .expect(404)
                 .then((response) => {
-                    console.log(response)
                     expect(response.error.text).toBe('Bad request - invalid input')
                 })
             })

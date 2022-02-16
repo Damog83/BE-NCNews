@@ -24,11 +24,12 @@ exports.fetchArticleById = (article) => {
     })
 }
 
+
 exports.updateArticleById = (article, votes) => {
 
-    console.log(votes)
+
     
-    if(votes === undefined || votes !== Number) {
+    if(votes === undefined || typeof(votes) !== 'number') {
         return Promise.reject({status: 404, msg:'Bad request - invalid input'})
     }
 
