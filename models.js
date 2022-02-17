@@ -7,7 +7,14 @@ exports.fetchTopics = () => {
     .then((results) => {
         return results.rows;
     })
-    
+}
+
+exports.fetchUsers = () => {
+
+    return db.query("SELECT username FROM users;")
+    .then((results) => {
+        return results.rows;
+    })
 }
 
 exports.fetchArticleById = (article) => {

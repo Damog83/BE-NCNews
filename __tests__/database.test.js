@@ -31,6 +31,27 @@ describe('/api/topics', () => {
     })
 })
 
+describe('/api/users', () => {
+    describe('GET', () => {
+        test('should return status 200 and an object with an array of objects', () => {
+            return request(app)
+            .get('/api/users')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.results).toHaveLength(4)
+                expect(Array.isArray(response.body.results)).toBe(true)
+                response.body.results.forEach((user) => 
+                expect(user).toEqual(
+                    expect.objectContaining({
+                        username: expect.any(String)
+                    })
+                ))
+            })
+        })
+
+    })
+})
+
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
         test('should return status 200 and an object containing a single object', () => {
@@ -61,15 +82,17 @@ describe('/api/articles/:article_id', () => {
             .send(incVotes)
             .expect(200)
             .then((response) => {
-                expect(response.body.articleObj).toEqual({
-                    author: 'butter_bridge',
-                    title: 'Living in the shadow of a great man',
-                    article_id: 1,
-                    body: 'I find this existence challenging',
-                    topic: 'mitch',
-                    created_at: '2020-07-09T20:11:00.000Z',
-                    votes:110
-                })
+                expect(response.body.articleObj).toEqual(
+                    expect.objectContaining({
+                            author: expect.any(String),
+                            title: expect.any(String),
+                            article_id: expect.any(Number),
+                            body: expect.any(String),
+                            topic: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number)
+                    })
+                )
             })
         })
     })
