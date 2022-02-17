@@ -4,6 +4,7 @@ const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
 const app = require('../app');
 
+
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
@@ -33,7 +34,7 @@ describe('/api/topics', () => {
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
         test('should return status 200 and an object containing a single object', () => {
-            const articleId = 2;            
+            const articleId = 1;            
             return request(app)
             .get(`/api/articles/${articleId}`)
             .expect(200)
@@ -52,7 +53,75 @@ describe('/api/articles/:article_id', () => {
             })
         })
     })
+    describe('PATCH', () => {
+        test('should return status 200 and an object containing updated article', () => {
+            const incVotes = { inc_votes: 10 };
+            return request(app)
+            .patch('/api/articles/1')
+            .send(incVotes)
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articleObj).toEqual({
+                    author: 'butter_bridge',
+                    title: 'Living in the shadow of a great man',
+                    article_id: 1,
+                    body: 'I find this existence challenging',
+                    topic: 'mitch',
+                    created_at: '2020-07-09T20:11:00.000Z',
+                    votes:110
+                })
+            })
+        })
+    })
+    describe('error handling', () => {
+        describe('bad request invalid article id', () => {
+            test('returns status 400 and message "Invalid id"', () => {
+                return request(app)
+                .get('/api/articles/invalidId')
+                .expect(400)
+                .then((response) => {
+                    expect(response.body.msg).toEqual({msg: 'Invalid id'})
+                })
+            })
+        })
+        describe('article does not exist', () => {
+            test('returns status 404 and message "Article does not exist"', () => {
+                return request(app)
+                .get('/api/articles/999')
+                .expect(404)
+                .then((response) => {
+                    expect(response.body.msg).toEqual({msg: 'Article not found'})
+                })
+            })
+        })
+        describe('body missing required fields', () => {
+            test('returns status 404 and message "Bad request - invalid input"', () => {
+                const inc_votes = {};
+                return request(app)
+                .patch('/api/articles/1')
+                .send(inc_votes)
+                .expect(404)
+                .then((response) => {
+                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
+                })
+
+             })
+        })
+        describe('input incorrect type', () => {
+            test('returns status 404 and message "Bad request - invalid input', () => {
+                const inc_votes = { inc_votes: 'A string' };
+                return request(app)
+                .patch('/api/articles/1')
+                .send(inc_votes)
+                .expect(404)
+                .then((response) => {
+                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
+                })
+            })
+        })
+    })
 })
+
 
 describe('invalid path', () => {
     test('returns status 404 error message when path not found', () => {
@@ -60,30 +129,9 @@ describe('invalid path', () => {
         .get('/api/invalid')
         .expect(404)
         .then((response) => {
-            expect(response.error.text).toBe('Path not found')
+            expect(response.body.msg).toEqual({msg: 'Path not found'})
         })
     })
 })
 
-describe('bad request invalid article id', () => {
-    test('returns status 400 and message "Invalid id"', () => {
-        return request(app)
-        .get('/api/articles/invalidId')
-        .expect(400)
-        .then((response) => {
-            expect(response.error.text).toBe('Invalid id')
-        })
-    })
-})
-
-describe('article does not exist', () => {
-    test('returns status 404 and message "Article does not exist"', () => {
-        return request(app)
-        .get('/api/articles/999')
-        .expect(404)
-        .then((response) => {
-            expect(response.error.text).toBe('Article not found')
-        })
-    })
-})
 
