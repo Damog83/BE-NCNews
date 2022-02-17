@@ -10,7 +10,6 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticleById = (article) => {
-
     return db.query(`SELECT *
                     FROM articles 
                     WHERE article_id = $1;`, [article])
@@ -26,8 +25,6 @@ exports.fetchArticleById = (article) => {
 
 
 exports.updateArticleById = (article, votes) => {
-
-
     
     if(votes === undefined || typeof(votes) !== 'number') {
         return Promise.reject({status: 404, msg:'Bad request - invalid input'})
