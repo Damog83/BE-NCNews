@@ -13,8 +13,8 @@ exports.getArticleById = (req, res, next) => {
   
   const {article_id} = req.params  
    
-  fetchArticleById(article_id).then((article) => { 
-    const [articleObj] = article
+  fetchArticleById(article_id).then((articleArray) => { 
+    const [articleObj] = articleArray
      res.status(200).send({articleObj})
    }).catch((err) => {
      next(err)

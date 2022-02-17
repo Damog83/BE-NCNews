@@ -1,6 +1,7 @@
 const db = require('./db/connection');
 const articles = require('./db/data/test-data/articles');
 
+
 exports.fetchTopics = () => {
     return db.query("SELECT * FROM topics;")
     .then((results) => {

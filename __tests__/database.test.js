@@ -3,7 +3,7 @@ const request = require("supertest");
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
 const app = require('../app');
-const { RowDescriptionMessage } = require("pg-protocol/dist/messages");
+
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -80,7 +80,7 @@ describe('/api/articles/:article_id', () => {
                 .get('/api/articles/invalidId')
                 .expect(400)
                 .then((response) => {
-                    expect(response.error.text).toBe('Invalid id')
+                    expect(response.body.msg).toEqual({msg: 'Invalid id'})
                 })
             })
         })
@@ -90,7 +90,7 @@ describe('/api/articles/:article_id', () => {
                 .get('/api/articles/999')
                 .expect(404)
                 .then((response) => {
-                    expect(response.error.text).toBe('Article not found')
+                    expect(response.body.msg).toEqual({msg: 'Article not found'})
                 })
             })
         })
@@ -102,7 +102,7 @@ describe('/api/articles/:article_id', () => {
                 .send(inc_votes)
                 .expect(404)
                 .then((response) => {
-                    expect(response.error.text).toBe('Bad request - invalid input')
+                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
                 })
 
              })
@@ -115,7 +115,7 @@ describe('/api/articles/:article_id', () => {
                 .send(inc_votes)
                 .expect(404)
                 .then((response) => {
-                    expect(response.error.text).toBe('Bad request - invalid input')
+                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
                 })
             })
         })
@@ -129,7 +129,7 @@ describe('invalid path', () => {
         .get('/api/invalid')
         .expect(404)
         .then((response) => {
-            expect(response.error.text).toBe('Path not found')
+            expect(response.body.msg).toEqual({msg: 'Path not found'})
         })
     })
 })

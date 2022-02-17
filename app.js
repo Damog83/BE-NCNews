@@ -14,7 +14,7 @@ app.get('/api/articles/:article_id', getArticleById);
 app.patch('/api/articles/:article_id', patchArticleById)
 
 app.get('/api/*', (req, res) => {
-    res.status(404).send('Path not found');
+    res.status(404).send({msg: {msg: 'Path not found'}});
 })
 
 app.use(handleCustomErrors);
