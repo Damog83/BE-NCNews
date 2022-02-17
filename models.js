@@ -17,6 +17,21 @@ exports.fetchUsers = () => {
     })
 }
 
+exports.fetchArticles = (sort_by = 'created_at', order = 'desc') => {
+
+    const validinputs = ['' , 'title' , 'topic' , 'author', 'body', 'created_at', 'votes', 'asc', 'desc']
+    
+    if(!validinputs.includes(sort_by, order)){
+        return Promise.reject({status: 400, msg: "Bad request"});
+  }
+    
+    
+    return db.query("SELECT * FROM articles;")
+    .then((results) => {
+        return results.rows;
+    })
+}
+
 exports.fetchArticleById = (article) => {
     return db.query(`SELECT *
                     FROM articles 

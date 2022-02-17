@@ -16,9 +16,9 @@ describe('/api/topics', () => {
             .get('/api/topics')
             .expect(200)
             .then((response) => {
-                expect(response.body.results).toHaveLength(3)
-                expect(Array.isArray(response.body.results)).toBe(true)
-                response.body.results.forEach((slug) => 
+                expect(response.body.topics).toHaveLength(3)
+                expect(Array.isArray(response.body.topics)).toBe(true)
+                response.body.topics.forEach((slug) => 
                 expect(slug).toEqual(
                     expect.objectContaining({
                         description: expect.any(String),
@@ -38,9 +38,9 @@ describe('/api/users', () => {
             .get('/api/users')
             .expect(200)
             .then((response) => {
-                expect(response.body.results).toHaveLength(4)
-                expect(Array.isArray(response.body.results)).toBe(true)
-                response.body.results.forEach((user) => 
+                expect(response.body.users).toHaveLength(4)
+                expect(Array.isArray(response.body.users)).toBe(true)
+                response.body.users.forEach((user) => 
                 expect(user).toEqual(
                     expect.objectContaining({
                         username: expect.any(String)
@@ -49,6 +49,32 @@ describe('/api/users', () => {
             })
         })
 
+    })
+})
+
+describe('/api/articles', () => {
+    describe('GET', () => {
+        test('should return status 200 and an object containing an array of article objects', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toHaveLength(12)
+                expect(Array.isArray(response.body.articles)).toBe(true)
+                expect(response.body.articles).toBeSorted('created_at', {descending:true})
+                response.body.articles.forEach((article) => 
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                ))
+            })
+        })
     })
 })
 
@@ -90,7 +116,7 @@ describe('/api/articles/:article_id', () => {
                             body: expect.any(String),
                             topic: expect.any(String),
                             created_at: expect.any(String),
-                            votes: expect.any(Number)
+                            votes: 110
                     })
                 )
             })
