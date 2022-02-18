@@ -23,9 +23,7 @@ exports.fetchUsers = () => {
         return results.rows;
     })
 }
-
 exports.fetchArticles = (sort_by = 'created_at', order = 'desc') => {
-
     const validInputs = ['title' , 'topic' , 'author', 'created_at', 'votes'];
       if(!validInputs.includes(sort_by)) {
         return Promise.reject({status: 400, msg: 'Bad request - invalid sort value'});

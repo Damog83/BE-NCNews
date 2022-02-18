@@ -108,7 +108,7 @@ describe('/api/articles/:article_id', () => {
             .send(incVotes)
             .expect(200)
             .then((response) => {
-                expect(response.body.articleObj).toEqual(
+                expect(response.body.article).toEqual(
                     expect.objectContaining({
                             author: expect.any(String),
                             title: expect.any(String),
@@ -166,6 +166,21 @@ describe('/api/articles/:article_id', () => {
                 .then((response) => {
                     expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
                 })
+            })
+        })
+    })
+})
+
+describe('/api/articles/:article_id/comments', () => {
+    describe('GET', () => {
+        test('returns status 200 and an object with an array of comment objects', () => {
+            return request(app)
+            .get('api/articles/1/comments')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.comments).toHaveLength(11)
+                expect(Array.isArray(response.body.comments).toBe(true))
+                
             })
         })
     })
