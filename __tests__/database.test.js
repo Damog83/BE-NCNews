@@ -54,7 +54,7 @@ describe('/api/users', () => {
 
 describe('/api/articles', () => {
     describe('GET', () => {
-        test('should return status 200 and an object containing an array of article objects', () => {
+        test('should return status 200 and an object containing an array of article objects in descending created_at value', () => {
             return request(app)
             .get('/api/articles')
             .expect(200)
@@ -183,4 +183,24 @@ describe('invalid path', () => {
     })
 })
 
+describe('invalid sort value', () => {
+    test('returns status 400 and message "Bad request - invalid sort/order value"', () => {
+        return request(app)
+        .get('/api/articles?sort_by=invalid')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort/order value'})
+        })
+    })
+})
 
+describe('invalid order value', () => {
+    test('returns status 400 and message "Bad request - invalid sort/order value"', () => {
+        return request(app)
+        .get('/api/articles?order=incorrect')
+        .expect(400)
+        .then((response) => {
+            expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort/order value'})
+        })
+    })
+})
