@@ -16,9 +16,9 @@ describe('/api/topics', () => {
             .get('/api/topics')
             .expect(200)
             .then((response) => {
-                expect(response.body.results).toHaveLength(3)
-                expect(Array.isArray(response.body.results)).toBe(true)
-                response.body.results.forEach((slug) => 
+                expect(response.body.topics).toHaveLength(3)
+                expect(Array.isArray(response.body.topics)).toBe(true)
+                response.body.topics.forEach((slug) => 
                 expect(slug).toEqual(
                     expect.objectContaining({
                         description: expect.any(String),
@@ -38,9 +38,9 @@ describe('/api/users', () => {
             .get('/api/users')
             .expect(200)
             .then((response) => {
-                expect(response.body.results).toHaveLength(4)
-                expect(Array.isArray(response.body.results)).toBe(true)
-                response.body.results.forEach((user) => 
+                expect(response.body.users).toHaveLength(4)
+                expect(Array.isArray(response.body.users)).toBe(true)
+                response.body.users.forEach((user) => 
                 expect(user).toEqual(
                     expect.objectContaining({
                         username: expect.any(String)
@@ -52,6 +52,31 @@ describe('/api/users', () => {
     })
 })
 
+describe('/api/articles', () => {
+    describe('GET', () => {
+        test('should return status 200 and an object containing an array of article objects in descending created_at value', () => {
+            return request(app)
+            .get('/api/articles')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toHaveLength(12)
+                expect(Array.isArray(response.body.articles)).toBe(true)
+                expect(response.body.articles).toBeSorted('created_at', {descending:true})
+                response.body.articles.forEach((article) => 
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number)
+                    })
+                ))
+            })
+        })
+    })
+})
+
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
         test('should return status 200 and an object containing a single object', () => {
@@ -60,7 +85,7 @@ describe('/api/articles/:article_id', () => {
             .get(`/api/articles/${articleId}`)
             .expect(200)
             .then((response) => {
-                expect(response.body.articleObj).toEqual(
+                expect(response.body.article).toEqual(
                     expect.objectContaining({
                         author: expect.any(String),
                         title: expect.any(String),
@@ -68,7 +93,8 @@ describe('/api/articles/:article_id', () => {
                         body: expect.any(String),
                         topic: expect.any(String),
                         created_at: expect.any(String),
-                        votes: expect.any(Number)
+                        votes: expect.any(Number),
+                        comment_count: expect.any(Number)
                     })
                 )
             })
@@ -90,7 +116,7 @@ describe('/api/articles/:article_id', () => {
                             body: expect.any(String),
                             topic: expect.any(String),
                             created_at: expect.any(String),
-                            votes: expect.any(Number)
+                            votes: 110
                     })
                 )
             })
@@ -157,4 +183,48 @@ describe('invalid path', () => {
     })
 })
 
+describe('invalid sort value', () => {
+   describe('articles', () => {
+       test('returns status 400 and message "Bad request - invalid sort value"', () => {
+           return request(app)
+           .get('/api/articles?sort_by=invalid')
+           .expect(400)
+           .then((response) => {
+               expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort value'})
+            })
+        })
+    })
+    describe('topics', () => {
+        test('returns status 400 and message "Bad request - invalid sort value"', () => {
+            return request(app)
+            .get('/api/topics?sort_by=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort value'})
+            })
+        })
+    })
+})
 
+describe('invalid order values', () => {
+    describe('articles', () => {
+        test('returns status 400 and message "Bad request - invalid order value"', () => {
+            return request(app)
+            .get('/api/articles?order=what')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
+            })
+        })
+    })
+    describe('topics', () => {
+        test('returns status 400 and message "Bad request - invalid order value"', () => {
+            return request(app)
+            .get('/api/topics?order=none')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
+            })
+        })
+    })
+})
