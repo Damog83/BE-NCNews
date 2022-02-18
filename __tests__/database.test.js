@@ -68,7 +68,6 @@ describe('/api/articles', () => {
                         title: expect.any(String),
                         topic: expect.any(String),
                         author: expect.any(String),
-                        body: expect.any(String),
                         created_at: expect.any(String),
                         votes: expect.any(Number)
                     })
@@ -86,7 +85,7 @@ describe('/api/articles/:article_id', () => {
             .get(`/api/articles/${articleId}`)
             .expect(200)
             .then((response) => {
-                expect(response.body.articleObj).toEqual(
+                expect(response.body.article).toEqual(
                     expect.objectContaining({
                         author: expect.any(String),
                         title: expect.any(String),
@@ -94,7 +93,8 @@ describe('/api/articles/:article_id', () => {
                         body: expect.any(String),
                         topic: expect.any(String),
                         created_at: expect.any(String),
-                        votes: expect.any(Number)
+                        votes: expect.any(Number),
+                        comment_count: expect.any(Number)
                     })
                 )
             })
