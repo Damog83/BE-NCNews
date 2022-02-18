@@ -184,23 +184,47 @@ describe('invalid path', () => {
 })
 
 describe('invalid sort value', () => {
-    test('returns status 400 and message "Bad request - invalid sort/order value"', () => {
-        return request(app)
-        .get('/api/articles?sort_by=invalid')
-        .expect(400)
-        .then((response) => {
-            expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort/order value'})
+   describe('articles', () => {
+       test('returns status 400 and message "Bad request - invalid sort value"', () => {
+           return request(app)
+           .get('/api/articles?sort_by=invalid')
+           .expect(400)
+           .then((response) => {
+               expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort value'})
+            })
+        })
+    })
+    describe('topics', () => {
+        test('returns status 400 and message "Bad request - invalid sort value"', () => {
+            return request(app)
+            .get('/api/topics?sort_by=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort value'})
+            })
         })
     })
 })
 
-describe('invalid order value', () => {
-    test('returns status 400 and message "Bad request - invalid sort/order value"', () => {
-        return request(app)
-        .get('/api/articles?order=incorrect')
-        .expect(400)
-        .then((response) => {
-            expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort/order value'})
+describe('invalid order values', () => {
+    describe('articles', () => {
+        test('returns status 400 and message "Bad request - invalid order value"', () => {
+            return request(app)
+            .get('/api/articles?order=what')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
+            })
+        })
+    })
+    describe('topics', () => {
+        test('returns status 400 and message "Bad request - invalid order value"', () => {
+            return request(app)
+            .get('/api/topics?order=none')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
+            })
         })
     })
 })

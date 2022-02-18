@@ -2,7 +2,8 @@
 const {fetchTopics, fetchUsers, fetchArticles, fetchArticleById, updateArticleById} = require('./models')
 
 exports.getTopics = (req, res, next) => {
-   fetchTopics().then((topics) => {
+  const {sort_by, order} = req.query;  
+   fetchTopics(sort_by, order).then((topics) => {
      res.status(200).send({topics});
    }).catch((err) => {
        next(err)
