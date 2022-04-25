@@ -70,6 +70,7 @@ describe('/api/articles', () => {
                         author: expect.any(String),
                         created_at: expect.any(String),
                         votes: expect.any(Number)
+                        // comment_count: expect.any(Number)
                     })
                 ))
             })
@@ -100,6 +101,26 @@ describe('/api/articles/:article_id', () => {
             })
         })
     })
+    describe('bad request invalid article id', () => {
+        test('returns status 400 and message "Invalid id"', () => {
+            return request(app)
+            .get('/api/articles/invalidId')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid id'})
+            })
+        })
+    })
+    describe('article does not exist', () => {
+        test('returns status 404 and message "Article does not exist"', () => {
+            return request(app)
+            .get('/api/articles/999')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Article not found'})
+            })
+        })
+    })
     describe('PATCH', () => {
         test('should return status 200 and an object containing updated article', () => {
             const incVotes = { inc_votes: 10 };
@@ -108,7 +129,7 @@ describe('/api/articles/:article_id', () => {
             .send(incVotes)
             .expect(200)
             .then((response) => {
-                expect(response.body.articleObj).toEqual(
+                expect(response.body.article).toEqual(
                     expect.objectContaining({
                             author: expect.any(String),
                             title: expect.any(String),
@@ -121,28 +142,7 @@ describe('/api/articles/:article_id', () => {
                 )
             })
         })
-    })
-    describe('error handling', () => {
-        describe('bad request invalid article id', () => {
-            test('returns status 400 and message "Invalid id"', () => {
-                return request(app)
-                .get('/api/articles/invalidId')
-                .expect(400)
-                .then((response) => {
-                    expect(response.body.msg).toEqual({msg: 'Invalid id'})
-                })
-            })
-        })
-        describe('article does not exist', () => {
-            test('returns status 404 and message "Article does not exist"', () => {
-                return request(app)
-                .get('/api/articles/999')
-                .expect(404)
-                .then((response) => {
-                    expect(response.body.msg).toEqual({msg: 'Article not found'})
-                })
-            })
-        })
+    })       
         describe('body missing required fields', () => {
             test('returns status 404 and message "Bad request - invalid input"', () => {
                 const inc_votes = {};
@@ -166,6 +166,94 @@ describe('/api/articles/:article_id', () => {
                 .then((response) => {
                     expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
                 })
+            })
+        })
+    })
+
+
+describe('/api/articles/:article_id/comments', () => {
+    describe('GET', () => {
+        test('returns status 200 and an object with an array of comment objects', () => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.comments).toHaveLength(11)
+                expect(Array.isArray(response.body.comments)).toBe(true)
+                response.body.comments.forEach((comment) => 
+                expect(comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: expect.any(Number),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        author: expect.any(String),
+                        body: expect.any(String)
+                    })
+                ))
+            })
+        })
+        test('returns empty array if article exists but has no comments', () => {
+            return request(app)
+            .get('/api/articles/4/comments')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.comments).toEqual([]);
+            })            
+        })
+    })
+    describe('POST', () => {
+        test('should return status 201 and an object with the posted comment', () => {
+            const comment = { username: 'butter_bridge', body: 'I highly recommend reading this article but not this comment' };
+            return request(app)
+            .post('/api/articles/1/comments')
+            .send(comment)
+            .expect(201)
+            .then((response) => {             
+                 expect(response.body.comment).toEqual(
+                    expect.objectContaining({
+                        comment_id: 19,
+                        body: 'I highly recommend reading this article but not this comment',
+                        article_id: 1,
+                        author: 'butter_bridge',
+                        votes: 0,
+                        created_at: expect.any(String)
+                    })
+                )
+            })
+        })
+        describe('body missing required fields', () => {
+            test('returns status 404 and message "Bad request - invalid input"', () => {
+                const comment = {};
+                return request(app)
+                .post('/api/articles/1/comments')
+                .send(comment)
+                .expect(404)
+                .then(response => {
+                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
+                })
+            })
+        })
+        describe('input incorrect type', () => {
+            test('returns status 404 and message "Bad request - invalid input"', () => {
+                const comment = {username: 11111, body : 'My comment'};
+                return request(app)
+                .post('/api/articles/1/comments')
+                .send(comment)
+                .expect(404)
+                .then(response => {
+                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
+                })
+            })
+        })
+    })
+
+   describe('error handling', () => {
+        test('returns 404 and message "Article does not exist', () => {
+            return request(app)
+            .get('/api/articles/999999999/comments')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Article does not exist'})
             })
         })
     })
@@ -210,7 +298,7 @@ describe('invalid order values', () => {
     describe('articles', () => {
         test('returns status 400 and message "Bad request - invalid order value"', () => {
             return request(app)
-            .get('/api/articles?order=what')
+            .get('/api/articles?order=invalid')
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
@@ -220,7 +308,7 @@ describe('invalid order values', () => {
     describe('topics', () => {
         test('returns status 400 and message "Bad request - invalid order value"', () => {
             return request(app)
-            .get('/api/topics?order=none')
+            .get('/api/topics?order=invalid')
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})

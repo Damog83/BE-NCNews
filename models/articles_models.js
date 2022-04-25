@@ -1,28 +1,4 @@
-const db = require('./db/connection');
-
-
-
-exports.fetchTopics = (sort_by = 'slug', order = 'asc') => {
-
-    const validInputs = ['description', 'slug'];
-    if(!validInputs.includes(sort_by)) {
-        return Promise.reject({status: 400, msg: 'Bad request - invalid sort value'});
-    }
-    if(!['asc', 'desc'].includes(order)) {
-        return Promise.reject({status: 400, msg: 'Bad request - invalid order value'});
-    }
-    return db.query("SELECT * FROM topics;")
-    .then((results) => {
-        return results.rows;
-    })
-}
-
-exports.fetchUsers = () => {
-    return db.query("SELECT username FROM users;")
-    .then((results) => {
-        return results.rows;
-    })
-}
+const db = require('../db/connection');
 
 exports.fetchArticles = (sort_by = 'created_at', order = 'desc') => {
 
@@ -42,7 +18,7 @@ exports.fetchArticles = (sort_by = 'created_at', order = 'desc') => {
 exports.fetchArticleById = (article) => {
     return db.query(`SELECT articles.*, COUNT(comments.comment_id) AS comment_count
                     FROM articles
-                    LEFT JOIN comments ON comments.article_id = articles.article_id
+                    JOIN comments ON comments.article_id = articles.article_id
                     WHERE articles.article_id = $1
                     GROUP BY articles.article_id;`, [article])
     .then((result) => {
@@ -52,6 +28,17 @@ exports.fetchArticleById = (article) => {
         const articleObject = {...result.rows[0]}
         articleObject.comment_count = Number(articleObject.comment_count)
               return articleObject;
+    })
+}
+
+exports.checkArticleExists = (article_id) => {
+    return db.query(`SELECT * 
+                     FROM articles 
+                     WHERE article_id = $1;`, [article_id])
+    .then((result) => {
+        if(result.rows.length === 0) {
+            return Promise.reject({status: 404, msg: 'Article does not exist'})
+        }
     })
 }
 
