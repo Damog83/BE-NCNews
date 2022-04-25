@@ -1,23 +1,6 @@
-
-const {fetchTopics,
-       fetchUsers,
-       fetchArticles,
+const {fetchArticles,
        fetchArticleById,
-       updateArticleById,
-       fetchCommentCountByArticleId} = require('./models')
-
-exports.getTopics = (req, res, next) => {
-  const {sort_by, order} = req.query;  
-   fetchTopics(sort_by, order).then((topics) => {
-     res.status(200).send({topics});
-   }).catch(next)
-}
-
-exports.getUsers = (req, res, next) => {
-  fetchUsers().then((users) => {
-   res.status(200).send({users});
- }).catch(next)
-}
+       updateArticleById} = require('../models/articles_models')
 
 exports.getArticles = (req, res, next) => {
   const {sort_by, order} = req.query;
@@ -27,7 +10,7 @@ exports.getArticles = (req, res, next) => {
 }
 
 exports.getArticleById = (req, res, next) => {  
-  const {article_id} = req.params  
+  const {article_id} = req.params; 
  fetchArticleById(article_id).then((article) => {
    res.status(200).send({article})
  }).catch(next) 
