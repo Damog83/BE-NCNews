@@ -2,7 +2,6 @@ const {fetchCommentsByArticleId, insertCommentByArticleId} = require('../models/
 const {checkArticleExists} = require('../models/articles_models');
 
 exports.getCommentsByArticleId = (req, res, next) => {
-  console.log('within controller')
     const {article_id} = req.params;
     return Promise.all([fetchCommentsByArticleId(article_id), checkArticleExists(article_id)]).then((comments) => {
       const commentsObj = comments[0]
