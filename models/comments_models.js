@@ -29,7 +29,6 @@ exports.insertCommentByArticleId = (article_id, author, body) => {
 			[article_id, author, body]
 		)
 		.then((results) => {
-			console.log(results.rows);
 			return results.rows[0];
 		});
 };
