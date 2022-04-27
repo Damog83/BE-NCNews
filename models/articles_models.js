@@ -15,9 +15,19 @@ exports.fetchArticles = (sort_by = "created_at", order = "desc") => {
 		});
 	}
 	return db
-		.query("SELECT title, topic, author, created_at, votes FROM articles;")
+		.query(
+			`SELECT	articles.title, 
+			articles.topic, 
+			articles.author, 
+			articles.created_at, 
+			articles.votes,
+			COUNT(comments.comment_id)::int AS comment_count
+			FROM articles
+			LEFT JOIN comments ON articles.article_id = comments.article_id
+			GROUP BY articles.article_id;`
+		)
 		.then((results) => {
-            console.log(results.rows)
+			console.log(results.rows);
 			return results.rows;
 		});
 };
