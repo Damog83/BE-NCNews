@@ -1,41 +1,57 @@
 const db = require("../db/connection");
+const { checkExists } = require("../utils.js/checkExists");
 
-exports.fetchArticles = (sort_by = "created_at", order = "desc") => {
-	const validInputs = ["title", "topic", "author", "created_at", "votes"];
-	if (!validInputs.includes(sort_by)) {
+exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
+	const validInputs = [
+		"title",
+		"topic",
+		"author",
+		"created_at",
+		"votes",
+		"comment_count",
+	];
+	if (!validInputs.includes(sort)) {
 		return Promise.reject({
 			status: 400,
-			msg: "Bad request - invalid sort value",
+			msg: "Invalid sort query",
 		});
 	}
 	if (!["asc", "desc"].includes(order)) {
 		return Promise.reject({
 			status: 400,
-			msg: "Bad request - invalid order value",
+			msg: "Invalid order query",
 		});
 	}
-	return db
-		.query(
-			`SELECT	articles.title, 
-			articles.topic, 
-			articles.author, 
-			articles.created_at, 
-			articles.votes,
-			COUNT(comments.comment_id)::int AS comment_count
-			FROM articles
-			LEFT JOIN comments ON articles.article_id = comments.article_id
-			GROUP BY articles.article_id;`
-		)
-		.then((results) => {
-			console.log(results.rows);
-			return results.rows;
-		});
+
+	const queryValues = [];
+	let queryStr = `SELECT	articles.title, 
+	articles.topic, 
+	articles.author, 
+	articles.created_at, 
+	articles.votes,
+	COUNT(comments.comment_id)::int AS comment_count
+	FROM articles
+	LEFT JOIN comments ON articles.article_id = comments.article_id `;
+
+	if (topic) {
+		queryValues.push(topic);
+		queryStr += `WHERE topic = $1 `;
+	}
+
+	queryStr += `GROUP BY articles.article_id
+	ORDER BY ${sort} ${order};`;
+	return db.query(queryStr, [...queryValues]).then((results) => {
+		 if(!results.rows.length) {
+			return checkExists('topics', 'slug', topic).then(() => {return results.rows})
+		}
+		return results.rows;
+	});
 };
 
 exports.fetchArticleById = (article) => {
 	return db
 		.query(
-			`SELECT articles.*, COUNT(comments.comment_id) AS comment_count
+			`SELECT articles.*, COUNT(comments.comment_id)::int AS comment_count
                     FROM articles
                     JOIN comments ON comments.article_id = articles.article_id
                     WHERE articles.article_id = $1
@@ -43,34 +59,15 @@ exports.fetchArticleById = (article) => {
 			[article]
 		)
 		.then((result) => {
-			if (result.rows.length === 0) {
-				return Promise.reject({ status: 404, msg: "Article not found" });
+			if (!result.rows.length) {
+				return Promise.reject({ status: 404, msg: 'Resource not found' });
 			}
 			const articleObject = { ...result.rows[0] };
-			articleObject.comment_count = Number(articleObject.comment_count);
 			return articleObject;
 		});
 };
 
-exports.checkArticleExists = (article_id) => {
-	return db
-		.query(
-			`SELECT * 
-                     FROM articles 
-                     WHERE article_id = $1;`,
-			[article_id]
-		)
-		.then((result) => {
-			if (result.rows.length === 0) {
-				return Promise.reject({ status: 404, msg: "Article does not exist" });
-			}
-		});
-};
-
 exports.updateArticleById = (article, votes) => {
-	if (votes === undefined || typeof votes !== "number") {
-		return Promise.reject({ status: 404, msg: "Bad request - invalid input" });
-	}
 	return db
 		.query(
 			`UPDATE articles
@@ -79,7 +76,10 @@ exports.updateArticleById = (article, votes) => {
                      RETURNING *;`,
 			[votes, article]
 		)
-		.then((results) => {
-			return results.rows;
+		.then((result) => {
+			if (!result.rows.length) {
+				return Promise.reject({ status: 404, msg: 'Resource not found' });
+			}
+			return result.rows;
 		});
 };

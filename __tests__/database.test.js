@@ -29,6 +29,26 @@ describe('/api/topics', () => {
         })
 
     })
+    describe('invalid sort value', () => {
+        test('returns status 400 and message "Invalid sort query"', () => {
+            return request(app)
+            .get('/api/topics?sort_by=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
+            })
+        })
+    })
+    describe('invalid order value', () => {
+        test('returns status 400 and message "Invalid order query"', () => {
+            return request(app)
+            .get('/api/topics?order=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid order query'})
+            })
+        })
+    })
 })
 
 describe('/api/users', () => {
@@ -61,7 +81,7 @@ describe('/api/articles', () => {
             .then((response) => {
                 expect(response.body.articles).toHaveLength(12)
                 expect(Array.isArray(response.body.articles)).toBe(true)
-                expect(response.body.articles).toBeSorted('created_at', {descending:true})
+                expect(response.body.articles).toBeSortedBy('created_at', {descending:true})
                 response.body.articles.forEach((article) => 
                 expect(article).toEqual(
                     expect.objectContaining({
@@ -76,14 +96,125 @@ describe('/api/articles', () => {
             })
         })
     })
+    describe('sort by', () => {
+        test('returns articles sorted by author', () => {
+            return request(app)
+            .get('/api/articles?sort=author')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toHaveLength(12)
+                expect(Array.isArray(response.body.articles)).toBe(true)
+                expect(response.body.articles).toBeSortedBy('author', {descending:true})
+                response.body.articles.forEach((article) => {
+                expect(article).toEqual(
+                    expect.objectContaining({
+                        title: expect.any(String),
+                        topic: expect.any(String),
+                        author: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        comment_count: expect.any(Number)
+                    })
+                    )
+                })
+            })
+        })
+    })
+    describe('invalid sort query', () => {
+        test('returns status 400 and message "Invalid sort query"', () => {
+            return request(app)
+            .get('/api/articles?sort=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
+             })
+         })
+     })    
+    describe('ascending order', () => {
+        test('return articles sorted by title in ascending order', () => {
+            return request(app)
+            .get('/api/articles?sort=title&order=asc')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toHaveLength(12)
+                expect(Array.isArray(response.body.articles)).toBe(true)
+                expect(response.body.articles).toBeSortedBy('title', {ascending:true})
+                response.body.articles.forEach((article) => {
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            title: expect.any(String),
+                            topic: expect.any(String),
+                            author: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number),
+                            comment_count: expect.any(Number)
+                        })
+                    )
+                })
+            })
+        })
+    })
+    describe('invalid order query', () => {
+        test('returns status 400 and message "Invalid order query"', () => {
+            return request(app)
+            .get('/api/articles?order=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid order query'})
+            })
+        })
+    })
+    describe('return articles by topic', () => {
+        test('return articles with topic of mitch sorted by comment_count in ascending order', () => {
+            return request(app)
+            .get('/api/articles?topic=mitch&sort=comment_count&order=asc')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toHaveLength(11)
+                expect(Array.isArray(response.body.articles)).toBe(true)
+                response.body.articles.forEach((article) => {
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            title: expect.any(String),
+                            topic: 'mitch',
+                            author: expect.any(String),
+                            created_at: expect.any(String),
+                            votes: expect.any(Number),
+                            comment_count: expect.any(Number)
+                        })
+                    )
+                })
+            })
+        })
+    })
+    describe('topic does not exist', () => {
+        test('returns 404 "No articles found on topic"', () => {
+            return request(app)
+            .get('/api/articles?topic=dogs')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+            })
+        })
+    })
+    describe('topic exists but no articles on topic', () => {
+        test('returns 200 and an empty array', () => {
+            return request(app)
+            .get('/api/articles?topic=paper')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.articles).toHaveLength(0)
+                expect(Array.isArray(response.body.articles)).toBe(true)
+            })
+        })
+    })
 })
 
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
-        test('should return status 200 and an object containing a single object', () => {
-            const articleId = 1;            
+        test('should return status 200 and an object containing requested article', () => {            
             return request(app)
-            .get(`/api/articles/${articleId}`)
+            .get(`/api/articles/1`)
             .expect(200)
             .then((response) => {
                 expect(response.body.article).toEqual(
@@ -107,17 +238,17 @@ describe('/api/articles/:article_id', () => {
             .get('/api/articles/invalidId')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Invalid id'})
+                expect(response.body.msg).toEqual({msg: 'Bad request'})
             })
         })
     })
     describe('article does not exist', () => {
-        test('returns status 404 and message "Article does not exist"', () => {
+        test('returns status 404 and message "Resource not found"', () => {
             return request(app)
             .get('/api/articles/999')
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Article not found'})
+                expect(response.body.msg).toEqual({msg: 'Resource not found'})
             })
         })
     })
@@ -143,37 +274,49 @@ describe('/api/articles/:article_id', () => {
             })
         })
     })       
-        describe('body missing required fields', () => {
-            test('returns status 404 and message "Bad request - invalid input"', () => {
-                const inc_votes = {};
-                return request(app)
-                .patch('/api/articles/1')
-                .send(inc_votes)
-                .expect(404)
-                .then((response) => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
-                })
+    describe('body missing required fields', () => {
+        test('returns status 400 and message "Bad request"', () => {
+            const inc_votes = {};
+            return request(app)
+            .patch('/api/articles/1')
+            .send(inc_votes)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request'})
+            })
 
-             })
         })
-        describe('input incorrect type', () => {
-            test('returns status 404 and message "Bad request - invalid input', () => {
-                const inc_votes = { inc_votes: 'A string' };
-                return request(app)
-                .patch('/api/articles/1')
-                .send(inc_votes)
-                .expect(404)
-                .then((response) => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
-                })
+    })
+    describe('input incorrect type', () => {
+        test('returns status 400 and message "Bad request"', () => {
+            const inc_votes = { inc_votes: 'A string' };
+            return request(app)
+            .patch('/api/articles/1')
+            .send(inc_votes)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Bad request'})
             })
         })
     })
+    describe('article does not exist', () => {
+        test('returns status 404 and message "resource not found" if article does not exist', () => {
+            const inc_votes = {inc_votes: 10}
+            return request(app)
+            .patch('/api/articles/9999')
+            .send(inc_votes)
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+            })
+        })
+    })
+})
 
 
 describe('/api/articles/:article_id/comments', () => {
     describe('GET', () => {
-        test('returns status 200 and an object with an array of comment objects', () => {
+        test('returns status 200 and a comments array of comment objects', () => {
             return request(app)
             .get('/api/articles/1/comments')
             .expect(200)
@@ -192,7 +335,7 @@ describe('/api/articles/:article_id/comments', () => {
                 ))
             })
         })
-        test('returns empty array if article exists but has no comments', () => {
+        test('returns status 200 empty array if article exists but has no comments', () => {
             return request(app)
             .get('/api/articles/4/comments')
             .expect(200)
@@ -200,7 +343,15 @@ describe('/api/articles/:article_id/comments', () => {
                 expect(response.body.comments).toEqual([]);
             })            
         })
-    })
+        test('returns 404 and message "Resource not found" if article does not exist', () => {
+            return request(app)
+            .get('/api/articles/999999999/comments')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+            })
+        })
+    })        
     describe('POST', () => {
         test('should return status 201 and an object with the posted comment', () => {
             const comment = { username: 'butter_bridge', body: 'I highly recommend reading this article but not this comment' };
@@ -210,6 +361,7 @@ describe('/api/articles/:article_id/comments', () => {
             .expect(201)
             .then((response) => {             
                  expect(response.body.comment).toEqual(
+                     
                     expect.objectContaining({
                         comment_id: 19,
                         body: 'I highly recommend reading this article but not this comment',
@@ -222,38 +374,59 @@ describe('/api/articles/:article_id/comments', () => {
             })
         })
         describe('body missing required fields', () => {
-            test('returns status 404 and message "Bad request - invalid input"', () => {
+            test('returns status 400 and message "Bad request"', () => {
                 const comment = {};
                 return request(app)
                 .post('/api/articles/1/comments')
                 .send(comment)
-                .expect(404)
+                .expect(400)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
+                    expect(response.body.msg).toEqual({msg: 'Bad request'})
+                })
+            })
+            test('returns status 400 and message "Bad request"', () => {
+                const comment = {username: 'butter_bridge'};
+                return request(app)
+                .post('/api/articles/1/comments')
+                .send(comment)
+                .expect(400)
+                .then(response => {
+                    expect(response.body.msg).toEqual({msg: 'Bad request'})
+                })
+            })
+            test('returns status 400 and message "Bad request"', () => {
+                const comment = {body : 'I highly recommend reading this article but not this comment'};
+                return request(app)
+                .post('/api/articles/1/comments')
+                .send(comment)
+                .expect(400)
+                .then(response => {
+                    expect(response.body.msg).toEqual({msg: 'Bad request'})
                 })
             })
         })
         describe('input incorrect type', () => {
-            test('returns status 404 and message "Bad request - invalid input"', () => {
-                const comment = {username: 11111, body : 'My comment'};
+            test('returns status 400 and message "Bad request" if invalid username is given', () => {
+                const comment = {username: 22222, body : 'I highly recommend reading this article but not this comment'};
                 return request(app)
                 .post('/api/articles/1/comments')
                 .send(comment)
-                .expect(404)
+                .expect(400)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request - invalid input'})
+                    expect(response.body.msg).toEqual({msg: 'Bad request'})
                 })
             })
         })
-    })
-
-   describe('error handling', () => {
-        test('returns 404 and message "Article does not exist', () => {
-            return request(app)
-            .get('/api/articles/999999999/comments')
-            .expect(404)
-            .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Article does not exist'})
+        describe('article does not exist', () => {
+            test('returns 404 and message "Resource not found" if article does not exist', () => {
+                const comment = { username: 'butter_bridge', body: 'I highly recommend reading this article but not this comment' };
+                return request(app)
+                .post('/api/articles/999/comments')
+                .send(comment)
+                .expect(404)
+                .then(response => {
+                    expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                })
             })
         })
     })
@@ -269,48 +442,42 @@ describe('invalid path', () => {
     })
 })
 
-describe('invalid sort value', () => {
-   describe('articles', () => {
-       test('returns status 400 and message "Bad request - invalid sort value"', () => {
-           return request(app)
-           .get('/api/articles?sort_by=invalid')
-           .expect(400)
-           .then((response) => {
-               expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort value'})
+describe('/api/comments/:comment_id', () => {
+    describe('DELETE', () => {
+        test('deletes comment by comment_id', () => {
+            return request(app)
+            .delete('/api/comments/1')
+            .expect(204)
+            })
+        })
+    describe('comment_id does not exist', () => {
+        test('returns msg: "comment does not exist" if attempt to delete comment by non existing id is made', () => {
+            return request(app)
+            .delete('/api/comments/9999')
+            .expect(404)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Resource not found'})
             })
         })
     })
-    describe('topics', () => {
-        test('returns status 400 and message "Bad request - invalid sort value"', () => {
+    describe('invalid comment_id', () => {
+        test('returns msg: "invalid comment id" if delete request is made with invalid comment_id', () => {
             return request(app)
-            .get('/api/topics?sort_by=invalid')
+            .delete('/api/comments/invalidCommentId')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request - invalid sort value'})
+                expect(response.body.msg).toEqual({msg: 'Bad request'})
             })
         })
     })
 })
 
-describe('invalid order values', () => {
-    describe('articles', () => {
-        test('returns status 400 and message "Bad request - invalid order value"', () => {
-            return request(app)
-            .get('/api/articles?order=invalid')
-            .expect(400)
-            .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
-            })
-        })
-    })
-    describe('topics', () => {
-        test('returns status 400 and message "Bad request - invalid order value"', () => {
-            return request(app)
-            .get('/api/topics?order=invalid')
-            .expect(400)
-            .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request - invalid order value'})
-            })
+describe('GET /api', () => {
+    test('returns JSON with all available endpoints of API', () => {
+        return request(app)
+        .get('/api')
+        .then((response) => {
+            expect(typeof response.body.endpoints).toBe('string')
         })
     })
 })
