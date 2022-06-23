@@ -1,4 +1,5 @@
 const express =require('express');
+const app = express();
 
 
 const {getApi} = require('./controllers/api_controllers');
@@ -10,11 +11,10 @@ const {handleServerErrors} = require('./errors/servererrors');
 const {handlePsqlErrors} = require('./errors/PGSQLerrors');
 const {handleCustomErrors} = require('./errors/customerrors');
 
-const app = express();
 
 app.use(express.json());
 
-app.get('/api', getApi)
+app.get('/api', getApi);
 
 app.get('/api/topics', getTopics);
 
