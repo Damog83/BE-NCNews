@@ -2,4 +2,3 @@ node_modules
 .env.*
 .query.sql
 .query.txt
-.listen.js
