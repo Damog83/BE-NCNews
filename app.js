@@ -1,5 +1,6 @@
 const express =require('express');
 const app = express();
+const cors = require('cors');
 
 
 const {getApi} = require('./controllers/api_controllers');
@@ -11,7 +12,7 @@ const {handleServerErrors} = require('./errors/servererrors');
 const {handlePsqlErrors} = require('./errors/PGSQLerrors');
 const {handleCustomErrors} = require('./errors/customerrors');
 
-
+app.use(cors());
 app.use(express.json());
 
 app.get('/api', getApi);

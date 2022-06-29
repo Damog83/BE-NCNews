@@ -477,7 +477,6 @@ describe('GET /api', () => {
         return request(app)
         .get('/api')
         .then((response) => {
-            console.log(response.body.endpoints)
             expect(typeof response.body.endpoints).toBe('string')
         })
     })
