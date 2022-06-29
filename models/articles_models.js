@@ -29,6 +29,7 @@ exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
 	articles.author, 
 	articles.created_at, 
 	articles.votes,
+	articles.article_id,
 	COUNT(comments.comment_id)::int AS comment_count
 	FROM articles
 	LEFT JOIN comments ON articles.article_id = comments.article_id `;
@@ -44,6 +45,7 @@ exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
 		 if(!results.rows.length) {
 			return checkExists('topics', 'slug', topic).then(() => {return results.rows})
 		}
+		console.log(results.rows)
 		return results.rows;
 	});
 };
