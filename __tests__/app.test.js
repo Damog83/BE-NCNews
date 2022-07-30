@@ -29,7 +29,7 @@ describe('/api/topics', () => {
         })
 
     })
-    describe('invalid sort value', () => {
+    describe('invalid sort query', () => {
         test('returns status 400 and message "Invalid sort query"', () => {
             return request(app)
             .get('/api/topics?sort_by=invalid')
@@ -39,7 +39,7 @@ describe('/api/topics', () => {
             })
         })
     })
-    describe('invalid order value', () => {
+    describe('invalid order query', () => {
         test('returns status 400 and message "Invalid order query"', () => {
             return request(app)
             .get('/api/topics?order=invalid')
@@ -336,29 +336,6 @@ describe('/api/articles/:article_id/comments', () => {
                 ))
             })
         })
-        describe.only('sort by', () => {
-            test('returns comments sorted by created_at in descending order', () => {
-                return request(app)
-                .get('/api/articles/1/comments?sort=created_at')
-                .expect(200)
-                .then((response) => {
-                    expect(response.body.comments).toHaveLength(11)
-                    expect(Array.isArray(response.body.comments)).toBe(true)
-                    expect(response.body.comments).toBeSortedBy('created_at', {descending:true})
-                    response.body.comments.forEach((comment) => {
-                        expect(comment).toEqual(
-                            expect.objectContaining({
-                                comment_id: expect.any(Number),
-                                votes: expect.any(Number),
-                                created_at: expect.any(String),
-                                author: expect.any(String),
-                                body: expect.any(String)
-                            })
-                        )
-                    })
-                })
-            })
-        })
         test('returns status 200 empty array if article exists but has no comments', () => {
             return request(app)
             .get('/api/articles/4/comments')
@@ -375,7 +352,73 @@ describe('/api/articles/:article_id/comments', () => {
                 expect(response.body.msg).toEqual({msg: 'Resource not found'})
             })
         })
-    })        
+    }) 
+    describe('sort by', () => {
+        test('returns comments sorted by created_at in descending order by default', () => {
+            return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.comments).toHaveLength(11)
+                expect(Array.isArray(response.body.comments)).toBe(true)
+                expect(response.body.comments).toBeSortedBy('created_at', {descending:true})
+                response.body.comments.forEach((comment) => {
+                    expect(comment).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    )
+                })
+            })
+        })
+    })
+    describe('sort by and order by', () => {
+        test('returns comments sorted by created_at in ascending order', () => {
+            return request(app)
+            .get('/api/articles/1/comments?sort=created_at&order=asc')
+            .expect(200)
+            .then((response) => {
+                expect(response.body.comments).toHaveLength(11)
+                expect(Array.isArray(response.body.comments)).toBe(true)
+                expect(response.body.comments).toBeSortedBy('created_at', {ascending:true})
+                response.body.comments.forEach((comment) => {
+                    expect(comment).toEqual(
+                        expect.objectContaining({
+                            comment_id: expect.any(Number),
+                            votes: expect.any(Number),
+                            created_at: expect.any(String),
+                            author: expect.any(String),
+                            body: expect.any(String)
+                        })
+                    )
+                })
+            })
+        })
+    })
+    describe('invalid sort query', () => {
+        test('returns status 400 and message "Invalid sort query"', () => {
+            return request(app)
+            .get('/api/articles/1/comments?sort=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
+            })
+        })
+    })
+    describe('invalid order query', () => {
+        test('returns status 400 and message "Invalid order query', () => {
+            return request(app)
+            .get('/api/articles/1/comments?sort=created_at&order=invalid')
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toEqual({msg: 'Invalid order query'})
+            })
+        })
+    })       
     describe('POST', () => {
         test('should return status 201 and an object with the posted comment', () => {
             const comment = { username: 'butter_bridge', body: 'I highly recommend reading this article but not this comment' };

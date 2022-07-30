@@ -30,7 +30,6 @@ exports.fetchCommentsByArticleId = (article_id, sort = "created_at", order = "de
 					return results.rows;
 				});
 			}
-			console.log(results.rows)
 			return results.rows;
 		});
 };
