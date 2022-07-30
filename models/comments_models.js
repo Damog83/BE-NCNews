@@ -1,11 +1,27 @@
 const db = require("../db/connection");
 const { checkExists } = require("../utils.js/checkExists");
 
-exports.fetchCommentsByArticleId = (article_id) => {
+exports.fetchCommentsByArticleId = (article_id, sort = "created_at", order = "desc") => {
+
+	if(!["created_at"].includes(sort)) {
+		return Promise.reject({
+			status: 400,
+			msg: "Invalid sort query"
+		})
+	}
+
+	if(!["asc", "desc"].includes(order)) {
+		return Promise.reject({
+			status: 400,
+			msg: "Invalid order query"
+		})
+	}
+
 	return db
 		.query(
 			`SELECT * FROM comments
-                     WHERE comments.article_id = $1;`,
+                     WHERE comments.article_id = $1
+					 ORDER BY ${sort} ${order};`,
 			[article_id]
 		)
 		.then((results) => {
@@ -14,6 +30,7 @@ exports.fetchCommentsByArticleId = (article_id) => {
 					return results.rows;
 				});
 			}
+			console.log(results.rows)
 			return results.rows;
 		});
 };

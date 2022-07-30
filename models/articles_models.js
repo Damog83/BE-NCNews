@@ -10,13 +10,13 @@ exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
 		"votes",
 		"comment_count",
 	];
-	if (!validInputs.includes(sort)) {
+	if(!validInputs.includes(sort)) {
 		return Promise.reject({
 			status: 400,
-			msg: "Invalid sort query",
+			msg: "Invalid sort query"
 		});
 	}
-	if (!["asc", "desc"].includes(order)) {
+	if(!["asc", "desc"].includes(order)) {
 		return Promise.reject({
 			status: 400,
 			msg: "Invalid order query",
@@ -45,7 +45,6 @@ exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
 		 if(!results.rows.length) {
 			return checkExists('topics', 'slug', topic).then(() => {return results.rows})
 		}
-		console.log(results.rows)
 		return results.rows;
 	});
 };
