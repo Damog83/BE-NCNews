@@ -36,7 +36,7 @@ app.get('/api/*', (req, res) => {
 })
 
 app.post('/api/*', (req, res) => {
-    res.status(404).send({msg: {msg: 'Path not found'}});
+    res.status(404).send({msg: {msg: 'Path not found Bananas'}});
 })
 
 app.use(handleCustomErrors);

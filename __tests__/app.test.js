@@ -127,6 +127,7 @@ describe('/api/articles', () => {
             .get('/api/articles?sort=invalid')
             .expect(400)
             .then((response) => {
+                console.log(response.body)
                 expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
              })
          })
