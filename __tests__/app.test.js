@@ -35,7 +35,7 @@ describe('/api/topics', () => {
             .get('/api/topics?sort_by=invalid')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
+                expect(response.body.msg).toBe('Invalid sort query')
             })
         })
     })
@@ -45,7 +45,7 @@ describe('/api/topics', () => {
             .get('/api/topics?order=invalid')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Invalid order query'})
+                expect(response.body.msg).toBe('Invalid order query')
             })
         })
     })
@@ -127,8 +127,7 @@ describe('/api/articles', () => {
             .get('/api/articles?sort=invalid')
             .expect(400)
             .then((response) => {
-                console.log(response.body)
-                expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
+                expect(response.body.msg).toBe('Invalid sort query')
              })
          })
      })    
@@ -162,7 +161,7 @@ describe('/api/articles', () => {
             .get('/api/articles?order=invalid')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Invalid order query'})
+                expect(response.body.msg).toBe('Invalid order query')
             })
         })
     })
@@ -195,7 +194,7 @@ describe('/api/articles', () => {
             .get('/api/articles?topic=dogs')
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                expect(response.body.msg).toBe('Resource not found')
             })
         })
     })
@@ -240,7 +239,7 @@ describe('/api/articles/:article_id', () => {
             .get('/api/articles/invalidId')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request'})
+                expect(response.body.msg).toBe('Bad request')
             })
         })
     })
@@ -250,7 +249,7 @@ describe('/api/articles/:article_id', () => {
             .get('/api/articles/999')
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                expect(response.body.msg).toBe('Resource not found')
             })
         })
     })
@@ -284,7 +283,7 @@ describe('/api/articles/:article_id', () => {
             .send(inc_votes)
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request'})
+                expect(response.body.msg).toBe('Bad request')
             })
 
         })
@@ -297,7 +296,7 @@ describe('/api/articles/:article_id', () => {
             .send(inc_votes)
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request'})
+                expect(response.body.msg).toBe('Bad request')
             })
         })
     })
@@ -309,7 +308,7 @@ describe('/api/articles/:article_id', () => {
             .send(inc_votes)
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                expect(response.body.msg).toBe('Resource not found')
             })
         })
     })
@@ -350,7 +349,7 @@ describe('/api/articles/:article_id/comments', () => {
             .get('/api/articles/999999999/comments')
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                expect(response.body.msg).toBe('Resource not found')
             })
         })
     }) 
@@ -406,7 +405,7 @@ describe('/api/articles/:article_id/comments', () => {
             .get('/api/articles/1/comments?sort=invalid')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Invalid sort query'})
+                expect(response.body.msg).toBe('Invalid sort query')
             })
         })
     })
@@ -416,7 +415,7 @@ describe('/api/articles/:article_id/comments', () => {
             .get('/api/articles/1/comments?sort=created_at&order=invalid')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Invalid order query'})
+                expect(response.body.msg).toBe('Invalid order query')
             })
         })
     })       
@@ -428,8 +427,7 @@ describe('/api/articles/:article_id/comments', () => {
             .send(comment)
             .expect(201)
             .then((response) => {             
-                 expect(response.body.comment).toEqual(
-                     
+                 expect(response.body.comment).toEqual(     
                     expect.objectContaining({
                         comment_id: 19,
                         body: 'I highly recommend reading this article but not this comment',
@@ -449,7 +447,7 @@ describe('/api/articles/:article_id/comments', () => {
                 .send(comment)
                 .expect(400)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request'})
+                    expect(response.body.msg).toBe('Bad request')
                 })
             })
             test('returns status 400 and message "Bad request"', () => {
@@ -459,7 +457,7 @@ describe('/api/articles/:article_id/comments', () => {
                 .send(comment)
                 .expect(400)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request'})
+                    expect(response.body.msg).toBe('Bad request')
                 })
             })
             test('returns status 400 and message "Bad request"', () => {
@@ -469,7 +467,7 @@ describe('/api/articles/:article_id/comments', () => {
                 .send(comment)
                 .expect(400)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request'})
+                    expect(response.body.msg).toBe('Bad request')
                 })
             })
         })
@@ -481,7 +479,7 @@ describe('/api/articles/:article_id/comments', () => {
                 .send(comment)
                 .expect(400)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Bad request'})
+                    expect(response.body.msg).toBe('Bad request')
                 })
             })
         })
@@ -493,7 +491,7 @@ describe('/api/articles/:article_id/comments', () => {
                 .send(comment)
                 .expect(404)
                 .then(response => {
-                    expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                    expect(response.body.msg).toBe('Resource not found')
                 })
             })
         })
@@ -505,7 +503,7 @@ describe('invalid path', () => {
         .get('/api/invalid')
         .expect(404)
         .then((response) => {
-            expect(response.body.msg).toEqual({msg: 'Path not found'})
+            expect(response.body.msg).toBe('Path not found')
         })
     })
 })
@@ -524,7 +522,7 @@ describe('/api/comments/:comment_id', () => {
             .delete('/api/comments/9999')
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Resource not found'})
+                expect(response.body.msg).toBe('Resource not found')
             })
         })
     })
@@ -534,7 +532,7 @@ describe('/api/comments/:comment_id', () => {
             .delete('/api/comments/invalidCommentId')
             .expect(400)
             .then((response) => {
-                expect(response.body.msg).toEqual({msg: 'Bad request'})
+                expect(response.body.msg).toBe('Bad request')
             })
         })
     })
