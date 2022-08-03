@@ -61,7 +61,7 @@ exports.fetchArticleById = (article) => {
 		)
 		.then((result) => {
 			if (!result.rows.length) {
-				return Promise.reject({ status: 404, msg: 'Resource not found' });
+				return Promise.reject({ status: 404, msg: 'Resource not found from fetch article by article id' });
 			}
 			const articleObject = { ...result.rows[0] };
 			return articleObject;
