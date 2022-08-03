@@ -32,7 +32,7 @@ describe('/api/topics', () => {
     describe('invalid sort query', () => {
         test('returns status 400 and message "Invalid sort query"', () => {
             return request(app)
-            .get('/api/topics?sort_by=invalid')
+            .get('/api/topics?sort=invalid')
             .expect(400)
             .then((response) => {
                 expect(response.body.msg).toBe('Invalid sort query')
