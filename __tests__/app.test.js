@@ -338,7 +338,7 @@ describe('/api/articles/:article_id/comments', () => {
         })
         test('returns status 200 empty array if article exists but has no comments', () => {
             return request(app)
-            .get('/api/articles/4/comments')
+            .get('/api/articles/2/comments')
             .expect(200)
             .then((response) => {
                 expect(response.body.comments).toEqual([]);

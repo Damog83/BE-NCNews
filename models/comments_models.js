@@ -27,9 +27,12 @@ exports.fetchCommentsByArticleId = (article_id, sort = "created_at", order = "de
 		.then((results) => {
 			if (!results.rows.length) {
 				return checkExists("articles", "article_id", article_id).then(() => {
+				
 					return results.rows;
 				});
+				
 			}
+
 			return results.rows;
 		});
 };
