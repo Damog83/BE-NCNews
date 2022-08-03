@@ -249,7 +249,7 @@ describe('/api/articles/:article_id', () => {
             .get('/api/articles/999')
             .expect(404)
             .then((response) => {
-                expect(response.body.msg).toBe('Resource not found from fetch article by article id')
+                expect(response.body.msg).toBe('Resource not found')
             })
         })
     })
