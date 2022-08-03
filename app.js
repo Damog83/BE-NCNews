@@ -31,7 +31,11 @@ app.post('/api/articles/:article_id/comments', addCommentByArticleId);
 
 app.delete('/api/comments/:comment_id', deleteCommentByCommentId);
 
-app.all('/*', (req, res) => {
+app.get('/*', (req, res) => {
+    res.status(404).send({msg: 'Path not found'});
+})
+
+app.post('/*', (req, res) => {
     res.status(404).send({msg: 'Path not found'});
 })
 
