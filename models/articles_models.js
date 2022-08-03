@@ -52,7 +52,7 @@ exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
 exports.fetchArticleById = (article) => {
 	return db
 		.query(
-			`SELECT articles.*, COUNT(comments.comment_id)::int AS comment_count
+			`SELECT articles.*, COUNT(comments.comment_id) AS comment_count
                     FROM articles
                     JOIN comments ON comments.article_id = articles.article_id
                     WHERE articles.article_id = $1
