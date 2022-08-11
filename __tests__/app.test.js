@@ -1,5 +1,5 @@
-const db = require("../db/connection");
-const request = require("supertest");
+const db = require('../db/connection');
+const request = require('supertest');
 const seed = require('../db/seeds/seed');
 const testData = require('../db/data/test-data');
 const app = require('../app');
@@ -253,7 +253,7 @@ describe('/api/articles/:article_id', () => {
             })
         })
     })
-    describe('PATCH', () => {
+    describe('PATCH votes', () => {
         test('should return status 200 and an object containing updated article', () => {
             const incVotes = { inc_votes: 10 };
             return request(app)
@@ -419,7 +419,7 @@ describe('/api/articles/:article_id/comments', () => {
             })
         })
     })       
-    describe('POST', () => {
+    describe('POST comment', () => {
         test('should return status 201 and an object with the posted comment', () => {
             const comment = { username: 'butter_bridge', body: 'I highly recommend reading this article but not this comment' };
             return request(app)
@@ -517,7 +517,7 @@ describe('/api/comments/:comment_id', () => {
             })
         })
     describe('comment_id does not exist', () => {
-        test('returns msg: "comment does not exist" if attempt to delete comment by non existing id is made', () => {
+        test('returns msg: "Resource not found" if attempt to delete comment by non existing id is made', () => {
             return request(app)
             .delete('/api/comments/9999')
             .expect(404)
@@ -527,7 +527,7 @@ describe('/api/comments/:comment_id', () => {
         })
     })
     describe('invalid comment_id', () => {
-        test('returns msg: "invalid comment id" if delete request is made with invalid comment_id', () => {
+        test('returns msg: "Bad request" if delete request is made with invalid comment_id', () => {
             return request(app)
             .delete('/api/comments/invalidCommentId')
             .expect(400)
