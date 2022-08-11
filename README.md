@@ -28,27 +28,28 @@ Within .env.development copy and paste
 
     PGDATABASE=nc_news
     
-## Dependencies
-
-To install dependencies within terminal
+## Install Dependencies
 
     $ npm install
     
 ## Seed Database
-    
-To seed the database within terminal
 
     $ npm run setup-dbs
     $ npm run seed
     
 ## Run Test Suite
 
-To run the test suite within terminal
-
     $ npm test
     
-To run the app.tests
+## Run the app.tests
 
     $ npm test app.test.js
 
-    
+# Rest API
+
+## Get Articles
+
+### Request
+
+GET /api
+
