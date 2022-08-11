@@ -1,25 +1,25 @@
-const db = require("../db/connection");
-const { checkExists } = require("../utils.js/checkExists");
+const db = require('../db/connection');
+const { checkExists } = require('../utils.js/checkExists');
 
-exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
+exports.fetchArticles = (topic, sort = 'created_at', order = 'desc') => {
 	const validInputs = [
-		"title",
-		"topic",
-		"author",
-		"created_at",
-		"votes",
-		"comment_count",
+		'title',
+		'topic',
+		'author',
+		'created_at',
+		'votes',
+		'comment_count',
 	];
-	if(!validInputs.includes(sort)) {
+	if (!validInputs.includes(sort)) {
 		return Promise.reject({
 			status: 400,
-			msg: "Invalid sort query"
+			msg: 'Invalid sort query',
 		});
 	}
-	if(!["asc", "desc"].includes(order)) {
+	if (!['asc', 'desc'].includes(order)) {
 		return Promise.reject({
 			status: 400,
-			msg: "Invalid order query",
+			msg: 'Invalid order query',
 		});
 	}
 
@@ -42,8 +42,10 @@ exports.fetchArticles = (topic, sort = "created_at", order = "desc") => {
 	queryStr += `GROUP BY articles.article_id
 	ORDER BY ${sort} ${order};`;
 	return db.query(queryStr, [...queryValues]).then((results) => {
-		 if(!results.rows.length) {
-			return checkExists('topics', 'slug', topic).then(() => {return results.rows})
+		if (!results.rows.length) {
+			return checkExists('topics', 'slug', topic).then(() => {
+				return results.rows;
+			});
 		}
 		return results.rows;
 	});
