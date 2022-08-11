@@ -12,7 +12,21 @@ Built with an MVC design pattern this api handles the controller and model aspec
 
 ## To clone the repo locally
 
-$ git clone 
+    $ git clone https://github.com/Damog83/BE-NCNews.git
+
+## Setup
+
+To run the file locally create two .env file within the main folder .env.test and .env.development.
+
+Within .env.test copy and paste 
+
+    PGDATABASE=nc_news_test
+    
+Within .env.development copy and paste
+
+    PGDATABASE=nc_news
+
+
 
 
 must add .env.test and .env.development files
