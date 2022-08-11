@@ -537,13 +537,3 @@ describe('/api/comments/:comment_id', () => {
         })
     })
 })
-
-describe('GET /api', () => {
-    test('returns JSON with all available endpoints of API', () => {
-        return request(app)
-        .get('/api')
-        .then((response) => {
-            expect(typeof response.body.endpoints).toBe('string')
-        })
-    })
-})
