@@ -14,7 +14,9 @@ Built with an MVC design pattern this api handles the controller and model aspec
 
     $ git clone https://github.com/Damog83/BE-NCNews.git
 
-## Setup
+# Setup
+
+## .env files
 
 To run the file locally create two .env file within the main folder .env.test and .env.development.
 
@@ -25,8 +27,28 @@ Within .env.test copy and paste
 Within .env.development copy and paste
 
     PGDATABASE=nc_news
+    
+## Dependencies
 
+To install dependencies within terminal
 
+    $ npm install
+    
+## Seed Database
+    
+To seed the database within terminal
 
+    $ npm run setup-dbs
+    $ npm run seed
+    
+## Run Test Suite
 
-must add .env.test and .env.development files
+To run the test suite within terminal
+
+    $ npm test
+    
+To run the app.tests
+
+    $ npm test app.test.js
+
+    
