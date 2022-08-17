@@ -18,7 +18,7 @@ Built with an MVC design pattern this api handles the controller and model aspec
 
 ## .env files
 
-To run the file locally create two .env file within the main folder .env.test and .env.development.
+To run the file locally create two .env files within the main folder .env.test and .env.development.
 
 Within .env.test copy and paste 
 
