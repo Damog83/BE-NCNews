@@ -1,7 +1,7 @@
 const { fetchApi } = require('../models/api_models');
 
 exports.getApi = (req, res, next) => {
-	res.status(200).send({
+	res.status(200).send( {'endpoints':{
 		'GET /api': {
 			description:
 				'serves up a json representation of all the available endpoints of the api',
@@ -22,7 +22,7 @@ exports.getApi = (req, res, next) => {
 		},
 		'GET /api/articles': {
 			description: 'serves an array of all topics',
-			queries: ['topic', 'sort_by', 'order'],
+			queries: ['topic', 'sort', 'order'],
 			exampleResponse: {
 				articles: [
 					{
@@ -122,5 +122,5 @@ exports.getApi = (req, res, next) => {
 			description: 'removes comment from database with nothing returned',
 			queries: [],
 		},
-	});
+	}});
 };
