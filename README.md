@@ -85,7 +85,40 @@ GET /api/users
 
 { users: [{ name: 'Tom Tickle', name: 'Paul Grump' }] }
 
+## Get Articles
 
+### Request
+
+GET /api/articles
+
+Queries : ['topic', 'sort', 'order']
+
+### Example response
+
+{
+					articles: [
+						{
+							article_id: 1,
+							title: 'Seafood substitutions are increasing',
+							topic: 'cooking',
+							author: 'weegembump',
+							body: 'Text from the article..',
+							created_at: '2022-04-04T20:45:00.691Z',
+							votes: 100,
+							comment_count: 11,
+						},
+						{
+							article_id: 2,
+							title: 'Running a Node App',
+							topic: 'coding',
+							author: 'jessjelly',
+							body: 'Text from the article..',
+							created_at: '2022-03-04T20:45:00.691Z',
+							votes: 0,
+							comment_count: 3,
+						},
+					],
+				}
 
 
 
