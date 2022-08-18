@@ -74,10 +74,12 @@ GET /api/topics
 
 ### Example response
 ```
-{ topics: [{ 
+{ topics: [
+           { 
              slug: 'football',
 	     description: 'Footie!' 
-	    }]
+	   }
+	  ]
 }
 ```
 
@@ -89,10 +91,12 @@ GET /api/users
 
 ### Example response
 ```
-{ users: [{ 
+{ users: [
+          { 
             name: 'Tom Tickle',
 	    name: 'Paul Grump'
-	   }]
+	  }
+	 ]
 }
 ```
 
@@ -106,7 +110,8 @@ Queries : ['topic', 'sort', 'order']
 
 ### Example response
 ```
-{articles: [{
+{articles: [
+            {
               article_id: 1,
               title: 'Seafood substitutions are increasing',
 	      topic: 'cooking',
@@ -182,7 +187,8 @@ GET /api/articles/:article_id/comments
 
 ### Example Response
 ```
-{comments: [{
+{comments: [
+            {
 	      comment_id: 1,
 	      body: 'Text from the comment.',
 	      votes: -1,
