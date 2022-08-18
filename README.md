@@ -162,9 +162,63 @@ Article with updated votes value
 					},
 				}
 
+## Get Comments By Article Id
 
+### Request
 
+GET /api/articles/:article_id/comments
 
+### Example Response
+
+{
+					comments: [
+						{
+							comment_id: 1,
+							body: 'Text from the comment.',
+							votes: -1,
+							author: 'tickle122',
+							article_id: 18,
+							created_at: '2022-04-10T20:45:00.691Z',
+						},
+						{
+							comment_id: 19,
+							body: 'Text from the comment.',
+							votes: 7,
+							author: 'grumpy19',
+							article_id: 4,
+							created_at: '2022-04-10T20:45:00.691Z',
+						},
+					],
+				}
+
+## Post Comment To Article
+
+### Request
+
+POST /api/articles/:article_id/comments
+
+### Example Response
+
+{
+					comment: {
+						comment_id: 19,
+						body: 'Text from the comment',
+						article_id: 1,
+						author: 'grumpy19',
+						votes: 0,
+						created_at: '2022-06-22T20:45:00.691Z',
+					},
+				}
+				
+## Delete Comment
+
+### Request
+
+DELETE /api/comments/:comment_id
+
+### Example Response
+
+No response content
 
 
 
