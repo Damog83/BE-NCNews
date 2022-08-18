@@ -47,7 +47,7 @@ Within .env.development copy and paste
 
 # Rest API
 
-## Get Articles
+## Get Endpoints
 
 ### Request
 
@@ -64,6 +64,17 @@ GET /api
 			                       }
              }
 }
+
+## Get Topics
+
+### Request
+
+GET /api/topics
+
+### Example response
+
+{ topics: [{ slug: 'football', description: 'Footie!' }]}
+
 
 
 
