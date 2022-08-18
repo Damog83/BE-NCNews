@@ -120,8 +120,47 @@ Queries : ['topic', 'sort', 'order']
 					],
 				}
 
+## Get Article By Article Id
 
+### Request
 
+GET /api/articles/:article_id
+
+### Example Response
+
+{article: {			article_id: 1,
+						title: 'Seafood substitutions are increasing',
+						topic: 'cooking',
+						author: 'weegembump',
+						body: 'Text from the article..',
+						created_at: '2022-04-10T20:45:00.691Z',
+						votes: 100,
+						comment_count: 11,
+					},
+				}
+
+## Patch Article Votes
+
+### Request
+
+PATCH /api/article/:article_id'
+
+### Example Response
+
+Article with updated votes value
+
+{
+					article: {
+						article_id: 1,
+						title: 'Seafood substitutions are increasing',
+						topic: 'cooking',
+						author: 'weegembump',
+						body: 'Text from the article..',
+						created_at: '2022-04-10T20:45:00.691Z',
+						votes: 101,
+						comment_count: 11,
+					},
+				}
 
 
 
