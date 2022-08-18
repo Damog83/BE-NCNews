@@ -75,6 +75,18 @@ GET /api/topics
 
 { topics: [{ slug: 'football', description: 'Footie!' }]}
 
+## Get Users
+
+### Request
+
+GET /api/users
+
+### Example response
+
+{ users: [{ name: 'Tom Tickle', name: 'Paul Grump' }] }
+
+
+
 
 
 
