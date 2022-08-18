@@ -53,3 +53,26 @@ Within .env.development copy and paste
 
 GET /api
 
+### Example response
+
+{'enpoints': { 'GET /api': { description:
+				'serves up a json representation of all the available endpoints of the api',
+		      }, 
+               'GET /api/topics': { description: 'serves an array of all topics',
+			                        queries: [],
+			                        exampleResponse: { topics: [{ slug: 'football', description: 'Footie!' }],
+			                       }
+             }
+}
+
+
+
+
+
+
+
+
+
+
+
+
