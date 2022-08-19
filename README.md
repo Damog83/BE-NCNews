@@ -238,6 +238,7 @@ DELETE /api/comments/:comment_id
 No response content
 
 ## Tech Versions
-
+```
 node v17.3.0
 PostgreSQl v14.4
+```
