@@ -2,3 +2,5 @@ node_modules
 .env.*
 .query.sql
 .query.txt
+error-handling.md
+hosting.md
