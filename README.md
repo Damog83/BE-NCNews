@@ -2,7 +2,7 @@
 
 ## Link to hosted version:
 
-https://be-nc-news-3bj4.onrender.com/api/articles/1
+https://be-nc-news-3bj4.onrender.com/api
 
 ## Summary
 
