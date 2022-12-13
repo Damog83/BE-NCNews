@@ -2,7 +2,7 @@
 
 ## Link to hosted version:
 
-https://appbencnews.herokuapp.com/api
+https://be-nc-news-3bj4.onrender.com/api/articles/1
 
 ## Summary
 
